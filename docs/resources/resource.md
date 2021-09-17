@@ -1,18 +1,18 @@
 ---
-page_title: "scaffolding_resource Resource - terraform-provider-scaffolding"
+page_title: "vault_secret_resource Resource - terraform-provider-vault"
 subcategory: ""
 description: |-
   Sample resource in the Terraform provider scaffolding.
 ---
 
-# Resource `scaffolding_resource`
+# Resource `vault_secret_resource`
 
 Sample resource in the Terraform provider scaffolding.
 
 ## Example Usage
 
 ```terraform
-resource "scaffolding_resource" "example" {
+resource "vault_secret_resource" "example" {
   sample_attribute = "foo"
 }
 ```

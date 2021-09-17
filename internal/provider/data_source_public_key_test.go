@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccDataSourceScaffolding(t *testing.T) {
+func TestAccDataSourcePublicKey(t *testing.T) {
 	t.Skip("data source not yet implemented, remove this once you add your own code")
 
 	resource.UnitTest(t, resource.TestCase{
@@ -15,18 +15,18 @@ func TestAccDataSourceScaffolding(t *testing.T) {
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceScaffolding,
+				Config: testAccDataSourcePublicKey,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestMatchResourceAttr(
-						"data.scaffolding_data_source.foo", "sample_attribute", regexp.MustCompile("^ba")),
+						"data.vault_public_key_data_source.test", "comment", regexp.MustCompile("^ba")),
 				),
 			},
 		},
 	})
 }
 
-const testAccDataSourceScaffolding = `
-data "scaffolding_data_source" "foo" {
-  sample_attribute = "bar"
+const testAccDataSourcePublicKey = `
+data "vault_public_key_data_source" "test" {
+  comment = "bar"
 }
 `

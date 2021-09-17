@@ -1,30 +1,25 @@
 ---
-page_title: "scaffolding_data_source Data Source - terraform-provider-scaffolding"
+page_title: "vault_public_key_data_source Data Source - terraform-provider-vault"
 subcategory: ""
 description: |-
-  Sample data source in the Terraform provider scaffolding.
+  Public key data source in the Terraform provider scaffolding.
 ---
 
-# Data Source `scaffolding_data_source`
+# Data Source `vault_public_key_data_source`
 
 Sample data source in the Terraform provider scaffolding.
 
 ## Example Usage
 
 ```terraform
-data "scaffolding_data_source" "example" {
-  sample_attribute = "foo"
+data "vault_public_key_data_source" "example" {
+  comment = "example"
 }
 ```
 
 ## Schema
 
-### Required
-
-- **sample_attribute** (String, Required) Sample attribute.
-
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
-
+- **comment** (String, Optional) The comment for a key data.
 

@@ -2,9 +2,9 @@ package provider
 
 import (
 	"context"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/kyokuryou/terraform-provider-vault/client"
 )
 
 func init() {
@@ -26,11 +26,28 @@ func init() {
 func New(version string) func() *schema.Provider {
 	return func() *schema.Provider {
 		p := &schema.Provider{
-			DataSourcesMap: map[string]*schema.Resource{
-				"scaffolding_data_source": dataSourceScaffolding(),
+			Schema: map[string]*schema.Schema{
+				"path": {
+					Type:        schema.TypeString,
+					Optional:    false,
+					ForceNew:    true,
+					Description: "The path to the save storage account directory",
+					DefaultFunc: schema.EnvDefaultFunc("VAULT_PATH", ""),
+				},
+				"private_key": {
+					Type:        schema.TypeString,
+					Optional:    false,
+					ForceNew:    true,
+					Description: "The Private Key which should be used for authentication, which needs to rsa format",
+					DefaultFunc: schema.EnvDefaultFunc("VAULT_PRIVATE_KEY", ""),
+				},
 			},
 			ResourcesMap: map[string]*schema.Resource{
-				"scaffolding_resource": resourceScaffolding(),
+				"vault_secret_resource": resourceSecret(),
+			},
+			DataSourcesMap: map[string]*schema.Resource{
+				"vault_secret_data_source":     dataSourceSecret(),
+				"vault_public_key_data_source": dataSourcePublicKey(),
 			},
 		}
 
@@ -40,18 +57,13 @@ func New(version string) func() *schema.Provider {
 	}
 }
 
-type apiClient struct {
-	// Add whatever fields, client or connection info, etc. here
-	// you would need to setup to communicate with the upstream
-	// API.
-}
-
 func configure(version string, p *schema.Provider) func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	return func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		// Setup a User-Agent for your API client (replace the provider name for yours):
-		// userAgent := p.UserAgent("terraform-provider-scaffolding", version)
-		// TODO: myClient.UserAgent = userAgent
-
-		return &apiClient{}, nil
+	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		p.UserAgent("terraform-provider-vault", version)
+		c, err := client.New(d.Get("path").(string), d.Get("private_key").(string))
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+		return &c, nil
 	}
 }
